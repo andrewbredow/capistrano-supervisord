@@ -25,6 +25,7 @@ module Capistrano
           _cset(:supervisord_configure_path, '/')
           _cset(:supervisord_configure_source_path, File.join(File.dirname(__FILE__), 'templates', 'supervisord'))
           _cset(:supervisord_configure_files, [])
+          _cset(:supervisord_configure_file_prefix, '')
           _cset(:supervisord_configure_cleanup_files, [])
 
           _cset(:supervisord_install_method, :apt)
@@ -50,7 +51,7 @@ module Capistrano
               supervisord_configure_files.each { |file|
                 src_file = File.join(supervisord_configure_source_path, file)
                 dst_file = File.join(supervisord_configure_path, file)
-                tmp_file = File.join('/tmp', File.basename(file))
+                tmp_file = File.join('/tmp', File.basename(file).prepend(supervisord_configure_file_prefix))
                 if File.file?(src_file)
                   put(File.read(src_file), tmp_file)
                 elsif File.file?("#{src_file}.erb")
